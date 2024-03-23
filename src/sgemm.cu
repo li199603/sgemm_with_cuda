@@ -243,7 +243,7 @@ __global__ void sgemm_gpu_kernel_v2(float *__restrict__ A,
     float c = 0.0f;
 
     const int tid = threadIdx.y * blockDim.x + threadIdx.x;
-    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是负责的这个float4的索引
+    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是当前线程负责的这个float4的索引
     const int row_s_a = tid / 16;
     const int col_s_a = (tid % 16) * 4;
     const int row_s_b = tid / 4;
@@ -339,7 +339,7 @@ __global__ void sgemm_gpu_kernel_v3(float *__restrict__ A,
     float r_c[TM][TN] = {0.0f};
 
     const int tid = threadIdx.y * blockDim.x + threadIdx.x;
-    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是负责的这个float4的索引
+    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是当前线程负责的这个float4的索引
     const int row_s_a = tid / 2;
     const int col_s_a = (tid % 2) * 4;
     const int row_s_b = tid / 32;
@@ -453,7 +453,7 @@ __global__ void sgemm_gpu_kernel_v4(float *__restrict__ A,
     float r_c[TM][TN] = {0.0f};
 
     const int tid = threadIdx.y * blockDim.x + threadIdx.x;
-    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是负责的这个float4的索引
+    // 每次从全局内存加载到共享内存，每个线程都负责一个float4。以下是当前线程负责的这个float4的索引
     const int row_s_a = tid / 2;
     const int col_s_a = (tid % 2) * 4;
     const int row_s_b = tid / 32;
@@ -508,6 +508,7 @@ __global__ void sgemm_gpu_kernel_v4(float *__restrict__ A,
 
 CostTime sgemm_gpu_v4(float *A, float *B, float *C, const int M, const int N,
                       const int K) {
+    // 除核函数，其他相比v3没有改动
     CostTime cost_time;
     TotalTimer total_timer;
     total_timer.start();
@@ -625,6 +626,7 @@ __global__ void sgemm_gpu_kernel_v5(float *__restrict__ A,
 
 CostTime sgemm_gpu_v5(float *A, float *B, float *C, const int M, const int N,
                       const int K) {
+    // 除核函数，其他相比v3没有改动
     CostTime cost_time;
     TotalTimer total_timer;
     total_timer.start();
@@ -679,7 +681,7 @@ __global__ void sgemm_gpu_kernel_v6(float *__restrict__ A,
     const int BM = 128, BN = 128;
     const int BK = 8;
 
-    // 相比v5，s_a, s_b, r_a, r_b变为double buffer
+    // 相比v5，s_a, s_b变为double buffer
     __shared__ float s_a[2][BK][BM];
     __shared__ float s_b[2][BK][BN];
     float r_a[TM];
@@ -785,6 +787,7 @@ __global__ void sgemm_gpu_kernel_v6(float *__restrict__ A,
 
 CostTime sgemm_gpu_v6(float *A, float *B, float *C, const int M, const int N,
                       const int K) {
+    // 除核函数，其他相比v3没有改动
     CostTime cost_time;
     TotalTimer total_timer;
     total_timer.start();
